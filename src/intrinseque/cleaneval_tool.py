@@ -124,7 +124,7 @@ def evaluate(diff):
 	return out
 
 def write_alignment(diff, filename):
-	fh = file(filename, "w")
+	fh = open(filename, "w")
 	for tag, text_seg, gold_seg in diff:
 		if tag == "delete":
 			print >> fh, "<" * 40, "(false positive)"

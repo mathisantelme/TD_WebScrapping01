@@ -1,0 +1,47 @@
+{
+    "BP3": [
+        "",
+        "Article",
+        "Largest",
+        "KeepEverything"
+    ],
+    "GOO": [
+        ""
+    ],
+    "HTML2TEXT": [
+        ""
+    ],
+    "INSCRIPTIS": [
+        ""
+    ],
+    "JT": [
+        "",
+        "_english",
+        "_langid",
+        "_trueLg"
+    ],
+    "NEWSPAPER": [
+        ""
+    ],
+    "NEWSPLEASE": [
+        ""
+    ],
+    "READABILITY": [
+        ""
+    ],
+    "TRAF": [
+        "",
+        "Fallback",
+        "Comments",
+        "FallbackComments"
+    ],
+    "TRAF_BL": [
+        ""
+    ],
+    "READ_py": [
+        ""
+    ],
+    "HTML-text": [
+        ""
+    ]
+}

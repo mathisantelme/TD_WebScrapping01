@@ -308,7 +308,7 @@ def generate_corpus_stats(path_to_corpus, output_file_path):
         output_file.close()
 ```
 
-On obtient donc les résultats suivants:
+On obtient donc les résultats suivants [ici](./out/exercice2_stats.csv):
 
 ```csv
 corpus_name, line_count, line_average, line_deviation, char_count, char_average, char_deviation

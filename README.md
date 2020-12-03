@@ -12,6 +12,8 @@ Afin de facilement utiliser ce programme (à des fins de correction), il vous fa
 
 Il faudrat aussi créer un dossier `out` qui contiendrat toutes les statistiques générées si ce dossier n'est pas présent (encore une fois à la racine du projet).
 
+![file_tree](./img/file_tree.png)
+
 Le programme principal est situé dans le fichier `main.py` (duh) qui peut être lancé avec des arguments. On peut lancer le code de chaque exercice individuellement avec le numéro de l'exercice en argument, tout les exercices avec l'argument `all` et supprimer tout les fichiers généré avec l'argument `clean` (par défaut le programme n'execute rien).
 
 > **Note:** Par défaut le code utilise **TOUT** les outils pour l'extraction de données ce qui peut prendre un certains temps (environ 1h30). Le programme est suffisamment intelligent pour ne pas extraire de données si le fichier de sortie existe déjà, attention si vous changez des dossiers de place;
@@ -44,7 +46,7 @@ Le détourage, ou extraction de texte à partir de données Web, consiste à ext
 
 Vous allez utiliser au moins trois des outils mentionnés durant le CM, avec à *minima* **jusText** et un outil pour chaque catégorie (cf: tableau ci dessous).
 
-<!-- TODO: ajout tableau des outils -->
+![tool_list](./img/tool_list.png)
 
 Avec chacun des de ces outils vous allez extraire le contenu textuel des fichiers html bruts et le stocker dans des dossiers séparés (portant le nom de l’outil tel qu’indiqué dans le tableau 1). Veillez à ce que les marques de paragraphes soient préservées (en effet elles sont présentes dans la référence). Ajoutez au besoin des balises `<p>` au début et à la fin de chaque ligne dans le fichier généré.
 
@@ -62,6 +64,8 @@ Repérez les fichiers pour lesquels l’écart avec la référence est particuli
 Pour ce premier exercice on va utiliser les *wrappers* fournis sur Moodle qui vont nous permettre de traiter ces fichiers en utilisant les différents outils. On va donc développer un programme qui va parcourir un dossier afin d'en récupérer les différents fichiers sources afin d'en extraire le contenu textuel, contenu que l'on va ensuite écrire dans un autre fichier.
 
 Chaque outil va posséder un dossier de sortie qui lui sera attitré afin de stocker un corpus par outils, ce qui facilitera les comparaisons.
+
+![file_tree](./img/file_tree.png)
 
 Pour effectuer les actions décrites ci-dessus, on va principalement appeller la fonction `create_subcorpus()` (dans le fichier `main.py`) qui prend en paramètre un chemin d'accès vers un corpus, un outil à utiliser et le mode de fonctionnement de l'outil.
 
@@ -124,8 +128,6 @@ def create_subcorpus(corpus_path, tool_mode="default", tool="BP3"):
                 )
             )
 ```
-<!-- TODO: ajouter le screen -->
-![output_filesystem](./img/output_filesystem.png)
 
 ---
 
@@ -308,24 +310,16 @@ def generate_corpus_stats(path_to_corpus, output_file_path):
         output_file.close()
 ```
 
-On obtient donc les résultats suivants [ici](./out/exercice2_stats.csv):
-
-```csv
-corpus_name, line_count, line_average, line_deviation, char_count, char_average, char_deviation
-HTML2TEXT_default, 567228, 335.83658969804617, 39892.038424367485, 35886208, 21247.014801657784, 188339464.18154556
-JT_lang_detect, 22526, 13.336885731201894, 306.2020793481089, 4186040, 2478.413262285376, 9447114.100380592
-GOO_default, 10831, 6.412670219064535, 95.98660086282653, 2203215, 1304.449378330373, 4376072.847792675
-BP3_default, 317553, 188.01243339253998, 17601.53980988676, 13951083, 8259.966252220249, 40057323.596848
-NEWSPAPER_default, 12749, 7.548253404381291, 139.9883465645637, 2206597, 1306.4517465956187, 4064577.197345957
-TRAF_BL_default, 1689, 1.0, 0.0, 4844509, 2868.270574304322, 9922267.444255508
-READ_py_default, 26050, 15.423327412670218, 240.42529360564862, 9890753, 5855.9816459443455, 93582972.15892889
-HTML-text_default, 1689, 1.0, 0.0, 12571699, 7443.2794552989935, 37372773.08353875
-JT_default, 22946, 13.585553582001184, 312.18939461657965, 4242854, 2512.0509177027825, 9562918.580000633
-TRAF_default, 35005, 20.725281231497927, 478.34844907721487, 4159927, 2462.9526346950856, 5561745.44003006
-Corpus_detourage, 0, 0, 0, 0, 0, 0
-NEWSPLEASE_default, 13768, 8.151568975725281, 105.55665976448628, 2894817, 1713.923623445826, 5126284.4684118135
-INSCRIPTIS_default, 418132, 247.5618709295441, 30799.639896085133, 38072342, 22541.351095322676, 1287286084.5392554
-READABILITY_default, 61942, 36.67377146240379, 6117.601686249542, 5525811, 3271.646536412078, 9246772.313784612
-```
+On obtient donc les résultats [suivants](./out/exercice2_stats.csv):
 
 > **Note:** Dans un soucis de correction, le programme `main.py` peut recevoir en argument le numéro de l'exercice afin d'éviter de faire tourner tout le code à chaque fois. Si l'on souhaite lancer l'exercice 2 par example on va utiliser la commande suivante: `python main.py 2` (plus de détails dans la partie utilisation en début de document);
+
+## Exercice 3 - Evaluation Intrinsèque
+
+Même si l’écart de taille avec le fichier référence nous donne une idée de la qualité du résultat, ce n’est pas suffisant. Récupérez les deux fichiers `cleaneval_tool.py` et `test_eval.py` sur **Moodle**.
+
+Le premier contient une librairie pour évaluer la correspondance entre le fichier nettoyé et le fichier de référence (par le biais d’une distance d’édition). Le script a été dévelopé pour la campagne d’évaluation *Cleaneval*.
+
+Pour chaque outil vous calculerez la moyenne des *F-mesure* (`F`), *Rappel* (`R`) et *Précision* (`P`) par langue ainsi que pour l’ensemble des langues.
+
+![exo3_tab_ref](./img/exo3_tab_ref.png)

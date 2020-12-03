@@ -162,62 +162,7 @@ def main():
         )
 ```
 
-On obtient les résultats suivants:
-
-```bash
-corpus ./data/Corpus_detourage/html; 
-line_stats {'count': 2350883, 'average': 1391.8786264061575, 'deviation': 1721267.8212660826}
-char_stats {'count': 127020301, 'average': 75204.44108940201, 'deviation': 2695450890.4655943}
-------------
-corpus ./data/BP3_default/raw; 
-line_stats {'count': 317553, 'average': 188.01243339253998, 'deviation': 17601.53980988676}
-char_stats {'count': 13951083, 'average': 8259.966252220249, 'deviation': 40057323.596848}
-------------
-corpus ./data/GOO_default/raw; 
-line_stats {'count': 10831, 'average': 6.412670219064535, 'deviation': 95.98660086282653}
-char_stats {'count': 2203215, 'average': 1304.449378330373, 'deviation': 4376072.847792675}
-------------
-corpus ./data/HTML2TEXT_default/raw; 
-line_stats {'count': 567228, 'average': 335.83658969804617, 'deviation': 39892.038424367485}
-char_stats {'count': 35886208, 'average': 21247.014801657784, 'deviation': 188339464.18154556}
-------------
-corpus ./data/INSCRIPTIS_default/raw; 
-line_stats {'count': 418132, 'average': 247.5618709295441, 'deviation': 30799.639896085133}
-char_stats {'count': 38072342, 'average': 22541.351095322676, 'deviation': 1287286084.5392554}
-------------
-corpus ./data/JT_default/raw; 
-line_stats {'count': 22526, 'average': 13.336885731201894, 'deviation': 306.2020793481089}
-char_stats {'count': 4186040, 'average': 2478.413262285376, 'deviation': 9447114.100380592}
-------------
-corpus ./data/NEWSPAPER_default/raw; 
-line_stats {'count': 12749, 'average': 7.548253404381291, 'deviation': 139.9883465645637}
-char_stats {'count': 2206597, 'average': 1306.4517465956187, 'deviation': 4064577.197345957}
-------------
-corpus ./data/NEWSPLEASE_default/raw; 
-line_stats {'count': 13768, 'average': 8.151568975725281, 'deviation': 105.55665976448628}
-char_stats {'count': 2894817, 'average': 1713.923623445826, 'deviation': 5126284.4684118135}
-------------
-corpus ./data/READABILITY_default/raw; 
-line_stats {'count': 61942, 'average': 36.67377146240379, 'deviation': 6117.601686249542}
-char_stats {'count': 5525811, 'average': 3271.646536412078, 'deviation': 9246772.313784612}
-------------
-corpus ./data/TRAF_default/raw; 
-line_stats {'count': 35005, 'average': 20.725281231497927, 'deviation': 478.34844907721487}
-char_stats {'count': 4159927, 'average': 2462.9526346950856, 'deviation': 5561745.44003006}
-------------
-corpus ./data/TRAF_BL_default/raw; 
-line_stats {'count': 1689, 'average': 1.0, 'deviation': 0.0}
-char_stats {'count': 4844509, 'average': 2868.270574304322, 'deviation': 9922267.444255508}
-------------
-corpus ./data/READ_py_default/raw; 
-line_stats {'count': 26050, 'average': 15.423327412670218, 'deviation': 240.42529360564862}
-char_stats {'count': 9890753, 'average': 5855.9816459443455, 'deviation': 93582972.15892889}
-------------
-corpus ./data/HTML-text_default/raw; 
-line_stats {'count': 1689, 'average': 1.0, 'deviation': 0.0}
-char_stats {'count': 12571699, 'average': 7443.2794552989935, 'deviation': 37372773.08353875}
-------------
-```
+On obtient les résultats [suivants](./out/exercice1_stats.csv).
 
 > **Note:** Dans un soucis de correction, le programme `main.py` peut recevoir en argument le numéro de l'exercice afin d'éviter de faire tourner tout le code à chaque fois. Si l'on souhaite lancer l'exercice 1 par example on va utiliser la commande suivante: `python main.py 1` (plus de détails dans la partie utilisation en début de document);
 

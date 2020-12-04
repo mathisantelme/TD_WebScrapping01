@@ -128,6 +128,8 @@ def get_paragraphs_JT(str_text, mode, file_name=''):
                 stop = set()
             else:
                 stop = justext.get_stoplist(lang)
+            lang_code_file.close()
+            
     else:
         stop = frozenset()
     

@@ -214,6 +214,7 @@ def get_paragraphs_JT(str_text, mode, file_name=''):
                 stop = set()
             else:
                 stop = justext.get_stoplist(lang)
+            lang_code_file.close()
     else:
         stop = frozenset()
     
@@ -289,7 +290,139 @@ Ajoutez maintenant le détail par source et faites une moyenne par source (consi
 
 ---
 
-Pour la réalisation d'un tel tableau on pourrai utiliser `langid` afin de détecter la langue, 
+De la même manière que dans l'exercice 2, on va utiliser le fichier spécifiant les langues (`doc_lang.json`) afin de connaitre la langue de chaque fichier. Pour cela on va créer une fonction qui va utiliser les fonctions fournies par le fichier `./src/intrinseque/cleaneval_tool.py` qui va permettre de calculer les différentes mesures pour chaque corpus. Cette fonction est appellée `eval_intrinseque_corpus` et est définie dans le fichier `main.py`:
 
-20111101_www.express.gr_6648058818bdb924afb68d540f362451eec0e42a8d47455b17b6ca3e
+```python
+def eval_intrinseque_corpus(corpus_path, clean_reference_path='./data/Corpus_detourage/reference', doc_lang_path='./data/doc_lg.json'):
+    """
+    Permet de mesurer la correspondance entre le corpus de référence et un corpus spécifié
+    """
+    
+    # la structure qui va contenir les mesures comme:
+    # [langue]: dict([F]:list(int), [R]: list(int), [P]: list(int))
+    measurements = dict()
 
+    # on charge notre dictionnaire contenant nos fichiers et leur langue respective
+    with open(doc_lang_path, mode='r', encoding='utf-8', errors='ignore') as doc_lang_file:
+        lang_codes = json.load(doc_lang_file)
+        doc_lang_file.close()
+    
+    # pour chaque fichier du corpus, on détecte la langue et on le compare à son fichier de référence
+    file_list = glob.glob(corpus_path + '/raw/*')
+    for file_path in file_list:
+
+        # on créé le chemin du fichier de référence en fonction du fichier actuel
+        file_name = file_path.split('clean_')[-1].replace('.txt', '')
+        clean_file_path = clean_reference_path + '/' + file_name
+
+        logging.info('Comparing {} to clean reference: {}'.format(file_path, clean_file_path))
+        
+        # on récupère la langue actuelle du fichier
+        current_lang = lang_codes[file_name]
+
+        # on effectue la comparaison
+        current_stats = evaluate_file(file_path, clean_file_path) # on compare notre fichier extrait et la reference 'propre'
+
+        # on stocke nos valeurs dans notre structure
+        # si on aucun enregistrement pour la langue actuelle on créé notre dictionnaire
+        if current_lang not in measurements:
+            measurements[current_lang] = ({'F': list(), 'R': list(), 'P': list()})
+
+        measurements[current_lang]['F'].append(current_stats['f-score'])
+        measurements[current_lang]['R'].append(current_stats['precision'])
+        measurements[current_lang]['P'].append(current_stats['recall'])
+
+    logging.info('Comparison between {} and {} finished'.format(corpus_path, clean_reference_path))
+
+    return measurements
+```
+
+Ensuite on applique cette fonction à chaque corpus et on stocke nos résultats dans un fichier csv (`exercice3_stats.csv`). On utilise la fonction `evaluate_all_corpus`:
+
+```python
+def evaluate_all_corpus(
+    corpuses_location="./data",
+    reference_corpus_path="./data/Corpus_detourage/reference",
+    doc_lang_path="./data/doc_lg.json",
+    output_file="./out/output_evaluation.csv",
+):
+    """
+    Permet d'évaluer les differents corpus et de stocker les resultats dans un fichier csv
+    """
+
+    # on récupère chaque corpus (sauf celui de référence)
+    corpus_list = glob.glob(corpuses_location + "/*")
+
+    results = dict()  # structure qui va stocker nos résultats finaux
+    total_measurements = dict(
+        {"total_F": list(), "total_R": list(), "total_P": list()}
+    )  # structure pour calculer les statistiques globales
+
+    for corpus_path in corpus_list:
+        if "./data/Corpus_detourage" in corpus_path:
+            pass
+        elif path.isdir(corpus_path):
+            corpus_name = corpus_path.split("/")[-1]  # on génère le nom du corpus
+            current_results = eval_intrinseque_corpus(
+                corpus_path, reference_corpus_path, doc_lang_path
+            )
+
+            # on fait les moyennes des différentes mesures
+            results[corpus_name] = dict()
+            results[corpus_name]["All"] = dict()
+            for lang_key, lang_item in current_results.items():
+                # on créé un dictionnaire pour chaque langue
+                results[corpus_name][lang_key] = dict()
+                for measurement_key, measurement_item in lang_item.items():
+                    results[corpus_name][lang_key][measurement_key] = sum(
+                        measurement_item
+                    ) / len(measurement_item)
+
+                    # on stocke toutes nos mesures pour le calcul global
+                    if measurement_key == "F":
+                        total_measurements["total_F"] += measurement_item
+                    elif measurement_key == "R":
+                        total_measurements["total_R"] += measurement_item
+                    elif measurement_key == "P":
+                        total_measurements["total_P"] += measurement_item
+                    else:
+                        logging.warning(
+                            "Key {} not recognised, skipping".format(measurement_key)
+                        )
+
+        # on calcule et stocke nos mesure globale sur toutes les langues
+        results[corpus_name]["All"]["F"] = sum(total_measurements["total_F"]) / len(
+            total_measurements["total_F"]
+        )
+        results[corpus_name]["All"]["R"] = sum(total_measurements["total_R"]) / len(
+            total_measurements["total_R"]
+        )
+        results[corpus_name]["All"]["P"] = sum(total_measurements["total_P"]) / len(
+            total_measurements["total_P"]
+        )
+
+    # on stocke nos infos dans un fichier csv
+    logging.info("Storing results in {}".format(output_file))
+
+    with open(output_file, mode="w", encoding="utf-8", errors="ignore") as output:
+        # on écrit nos entêtes
+        output.write(
+            ", all, , ,Russian, , ,Chinese, , ,English, , ,Polish, , ,Greek, , \n"
+        )
+        output.write(
+            "Tool name, F, R, P, F, R, P, F, R, P, F, R, P, F, R, P, F, R, P\n"
+        )
+
+        for tool, lang in results.items():
+            output_string = str(tool)
+            for measurement in lang.values():
+                output_string += ", {}, {}, {}".format(
+                    measurement["F"], measurement["R"], measurement["P"]
+                )
+            output.write(output_string + "\n")
+        output.close()
+```
+
+On obtient les résultats [suivants](./out/exercice3_evaluations.csv).
+
+> **Note:** Dans un soucis de correction, le programme `main.py` peut recevoir en argument le numéro de l'exercice afin d'éviter de faire tourner tout le code à chaque fois. Si l'on souhaite lancer l'exercice 3 par example on va utiliser la commande suivante: `python main.py 3` (plus de détails dans la partie utilisation en début de document);

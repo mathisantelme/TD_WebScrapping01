@@ -3,6 +3,7 @@ from os import path, makedirs
 import logging
 import json
 import sys
+import shutil
 
 from tool_detourage.detourage import apply_tool  # on importe nos outils de détourage
 from stats_corpus import (
@@ -272,6 +273,43 @@ def evaluate_all_corpus(
             output.write(output_string + "\n")
         output.close()
 
+def main():
+    """
+    Lance le code pour tout les exercices
+    """
+    # Exercice 1 - Scrapping
+    # on récupère les différents outils disponibles
+    f = open("./src/tool_detourage/tool_modes.json")
+    tools = json.load(f)
+    f.close()
+
+    for key, value in tools.items():
+        create_subcorpus(REFERENCE_CORPUS_PATH, tool=key)
+        pass
+
+    # on génère nos stats et on les stocke dans un fichier
+    generate_corpus_stats(PATH_TO_CORPUS, OUTPUT_FOLDER + "exercice1")
+
+    # Exercice 2 - Scrapping guide
+    # on effectue le scrapping avec JT en mode default et lang_detect
+    create_subcorpus(
+        REFERENCE_CORPUS_PATH, tool="JT", tool_mode="default"
+    )  # indépendant de la langue
+    create_subcorpus(
+        REFERENCE_CORPUS_PATH, tool="JT", tool_mode="lang_detect"
+    )  # détection de la langue
+    create_subcorpus(
+        REFERENCE_CORPUS_PATH, tool="JT", tool_mode="lang_specified"
+    )  # langue spécifiée
+
+    # on génère nos stats et on les stocke dans un fichier
+    generate_corpus_stats(PATH_TO_CORPUS, OUTPUT_FOLDER + "exercice2")
+
+    # Exercice 3
+    logging.info("Launching code for Exo3")
+
+    # on évalue tout les corpus et on stockes les résultats dans un fichier csv
+    evaluate_all_corpus(corpuses_location=PATH_TO_CORPUS, reference_corpus_path=CLEAN_REFERENCE_CORPUS_PATH, doc_lang_path=DOC_LG_PATH, output_file='./out/exercice3_evaluations.csv')
 
 ##########################################################################
 
@@ -327,7 +365,11 @@ if __name__ == "__main__":
 
         # on évalue tout les corpus et on stockes les résultats dans un fichier csv
         evaluate_all_corpus(corpuses_location=PATH_TO_CORPUS, reference_corpus_path=CLEAN_REFERENCE_CORPUS_PATH, doc_lang_path=DOC_LG_PATH, output_file='./out/exercice3_evaluations.csv')
-        pass
+
+    # on lance le code de tout les exercices
+    elif str(sys.argv[1]) == "all":
+        main()
+    
     else:
         logging.error(
             "Arguement {}, is not recognised, quitting".format(str(sys.argv[1]))

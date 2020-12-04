@@ -14,7 +14,7 @@ Il faudrat aussi créer un dossier `out` qui contiendrat toutes les statistiques
 
 ![file_tree](./img/file_tree.png)
 
-Le programme principal est situé dans le fichier `main.py` (duh) qui peut être lancé avec des arguments. On peut lancer le code de chaque exercice individuellement avec le numéro de l'exercice en argument, tout les exercices avec l'argument `all` et supprimer tout les fichiers généré avec l'argument `clean` (par défaut le programme n'execute rien).
+Le programme principal est situé dans le fichier `main.py` (duh) qui peut être lancé avec des arguments. On peut lancer le code de chaque exercice individuellement avec le numéro de l'exercice en argument et tout les exercices avec l'argument `all` (par défaut le programme n'execute rien).
 
 > **Note:** Par défaut le code utilise **TOUT** les outils pour l'extraction de données ce qui peut prendre un certains temps (environ 1h30). Le programme est suffisamment intelligent pour ne pas extraire de données si le fichier de sortie existe déjà, attention si vous changez des dossiers de place;
 
@@ -31,14 +31,6 @@ python main.py 1
 ```bash
 python main.py all
 ```
-
-**Nettoyage des fichiers générés:**
-
-```bash
-python main.py clean
-```
-
-<!-- TODO: ajout de la fonction de nettoyage -->
 
 ## Exercice 1 - Utilisation d'outils de détourage
 
@@ -426,3 +418,7 @@ def evaluate_all_corpus(
 On obtient les résultats [suivants](./out/exercice3_evaluations.csv).
 
 > **Note:** Dans un soucis de correction, le programme `main.py` peut recevoir en argument le numéro de l'exercice afin d'éviter de faire tourner tout le code à chaque fois. Si l'on souhaite lancer l'exercice 3 par example on va utiliser la commande suivante: `python main.py 3` (plus de détails dans la partie utilisation en début de document);
+
+---
+
+**ANTELME Mathis**

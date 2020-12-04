@@ -188,8 +188,12 @@ Recalculez les statistiques de la fin de l’exercice précédent pour chacun de
 
 Pour la réalisation de cette étape on va réutiliser les wrappers fournit sur **Moodle**. Ces derniers utilisent déjà la détection de la langue par défaut pour **Justext**, on va donc modifier le comportement de `get_paragraphs_JT()` la fonction qui permet d'extraire le contenu textuel avec **Justext**. On va tout simplement lui ajouter un nouveau mode de fonctionnement qui va détecter la langue et le mode par défaut sera indépendant de langue. Etant donné qu'aucune *stopList* n'est fournie pour la langue Chinoise, on utilisera aussi le mode idépendant si cette langue est détectée.
 
+En prévision de la deuxième partie de l'exercice on va définir un autre mode qui va permettre d'utiliser la *vraie* langue du contenu qui est stockée dans le fichier `doc_lg.json` afin de fournir les codes de langue à **Justext** que l'on appellera `lang_specified`.
+
+> **Note:** Afin de pouvoir sélectionner la langue dans le fichier **json** qui fournit la langue de chaque fichier, on l'ouvrira à chaque fois que l'on analysera un fichier. Pour cela on fournit le nom de fichier dans l'appel de la fonction (on aurai aussi pu directement fournir un dictionnaire en paramètres qui contient les fichier et leur langue respectives, cela aurait pu éviter d'ouvrir notre fichier **json** à chaque analyse).
+
 ```python
-def get_paragraphs_JT(str_text, mode):
+def get_paragraphs_JT(str_text, mode, file_name=''):
     """
     using Justext
     """
@@ -201,6 +205,15 @@ def get_paragraphs_JT(str_text, mode):
             stop = set()
         else:
             stop = justext.get_stoplist(lang)
+    # mode ou on détecte la 'vraie' langue fournie par le fichier doc_lg.json 
+    elif mode == 'lang_specified' and file_name != '':
+        with open(DOC_LG_PATH, mode='r', encoding='utf-8', errors='ignore') as lang_code_file:
+            json_data = json.load(lang_code_file) # on charge nos codes de langue
+            lang = json_data[file_name] # on récupère la langue
+            if lang == "Chinese":
+                stop = set()
+            else:
+                stop = justext.get_stoplist(lang)
     else:
         stop = frozenset()
     
@@ -212,6 +225,8 @@ def get_paragraphs_JT(str_text, mode):
     list_paragraphs = [x.text for x in paragraphs if not x.is_boilerplate]
     return list_paragraphs
 ```
+
+> **Note:** La variable `DOC_LG_PATH` est déclarée au début du fichier `detourage.py`;
 
 Ensuite il ne reste plus qu'a extraire le contenu textuel en utilisant **Justext** en mode détection de langue (*lang_detect*) et par défaut (*default*).
 
@@ -268,3 +283,13 @@ Le premier contient une librairie pour évaluer la correspondance entre le fichi
 Pour chaque outil vous calculerez la moyenne des *F-mesure* (`F`), *Rappel* (`R`) et *Précision* (`P`) par langue ainsi que pour l’ensemble des langues.
 
 ![exo3_tab_ref](./img/exo3_tab_ref.png)
+
+
+Ajoutez maintenant le détail par source et faites une moyenne par source (considérez le nom du site web uniquement) puis par source et par langue. Utiliser une moyenne non pondérée par le nombre de documents permet de mieux apprécier la qualité de la couverture de chaque outil.
+
+---
+
+Pour la réalisation d'un tel tableau on pourrai utiliser `langid` afin de détecter la langue, 
+
+20111101_www.express.gr_6648058818bdb924afb68d540f362451eec0e42a8d47455b17b6ca3e
+

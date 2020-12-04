@@ -1,6 +1,7 @@
 import os
 import re
 import langid
+import json
 
 ### NB: Si vous êtes sur windows il faudra peut être neutraliser certains imports d'outils si le requirements.txt a échoué dans l'install
 
@@ -18,8 +19,9 @@ from trafilatura import extract
 from trafilatura.core import baseline
 from lxml import etree, html
 
+DOC_LG_PATH = './data/doc_lg.json'
 
-def apply_tool(tool, str_text, mode=""):
+def apply_tool(tool, str_text, mode="", file_name=''):
     if tool == "BP3":
         list_paragraphs = get_paragraphs_BP3(str_text, mode)
     elif tool == "GOO":
@@ -31,7 +33,7 @@ def apply_tool(tool, str_text, mode=""):
         text_det = inscriptis.get_text(str_text)
         list_paragraphs = re.split("\n", text_det)
     elif tool == "JT":
-        list_paragraphs = get_paragraphs_JT(str_text, mode)
+        list_paragraphs = get_paragraphs_JT(str_text, mode, file_name)
     elif tool == "NEWSPAPER":
         try:
             text_det = fulltext(str_text)
@@ -105,7 +107,7 @@ def get_all_stop_words():
     return stop_words
 
 
-def get_paragraphs_JT(str_text, mode):
+def get_paragraphs_JT(str_text, mode, file_name=''):
     """
     using Justext
     """
@@ -117,6 +119,15 @@ def get_paragraphs_JT(str_text, mode):
             stop = set()
         else:
             stop = justext.get_stoplist(lang)
+    # mode ou on détecte la 'vraie' langue fournie par le fichier doc_lg.json 
+    elif mode == 'lang_specified' and file_name != '':
+        with open(DOC_LG_PATH, mode='r', encoding='utf-8', errors='ignore') as lang_code_file:
+            json_data = json.load(lang_code_file) # on charge nos codes de langue
+            lang = json_data[file_name] # on récupère la langue
+            if lang == "Chinese":
+                stop = set()
+            else:
+                stop = justext.get_stoplist(lang)
     else:
         stop = frozenset()
     

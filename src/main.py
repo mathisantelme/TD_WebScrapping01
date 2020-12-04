@@ -57,7 +57,7 @@ def create_subcorpus(corpus_path, tool_mode="default", tool="BP3"):
 
             # on récupère la liste des paragraphes
             text_paragraphs = apply_tool(
-                tool, html_file_content, mode=tool_mode
+                tool, html_file_content, mode=tool_mode, file_name=file_name
             )
 
             # la variable qui sert à stocker le contenu textuel final du fichier actuel
@@ -147,8 +147,9 @@ if __name__ == "__main__":
 
         # Exercice 2 - Scrapping guide
         # on effectue le scrapping avec JT en mode default et lang_detect
-        create_subcorpus(REFERENCE_CORPUS_PATH, tool='JT', tool_mode='default')
-        create_subcorpus(REFERENCE_CORPUS_PATH, tool='JT', tool_mode='lang_detect')
+        create_subcorpus(REFERENCE_CORPUS_PATH, tool='JT', tool_mode='default') # indépendant de la langue
+        create_subcorpus(REFERENCE_CORPUS_PATH, tool='JT', tool_mode='lang_detect') # détection de la langue
+        create_subcorpus(REFERENCE_CORPUS_PATH, tool='JT', tool_mode='lang_specified') # langue spécifiée
 
         # on génère nos stats et on les stocke dans un fichier
         generate_corpus_stats(PATH_TO_CORPUS, OUTPUT_FOLDER + 'exercice2')
